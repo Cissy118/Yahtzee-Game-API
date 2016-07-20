@@ -95,12 +95,3 @@ def roll(dice_kept):
 		num_dice = TOTAL_DICE - len(dice_kept)
 		dice = dice_kept + roll_dice(num_dice)
 	return dice
-
-
-
-
-
-
-
-
-
