@@ -1,14 +1,30 @@
 #Yahtzee Game API
 
+## Products
+- [App Engine][1]
+
+## Language
+- [Python][2]
+
+## APIs
+- [Google Cloud Endpoints][3]
+
 ## Set-Up Instructions:
 1.  Update the value of application in app.yaml to the app ID you have registered
  in the App Engine admin console and would like to use to host your instance of this sample.
-1.  Run the app with the devserver, and ensure it's running by visiting the API Explorer 
- - by default localhost:8080/_ah/api/explorer.
-1.  (Optional) Generate your client library(ies) with the endpoints tool.
- Deploy your application.
- 
- 
+1. Update the values at the top of `settings.py` to
+   reflect the respective client IDs you have registered in the
+   [Developer Console][4].
+1. Run the app with the devserver using `dev_appserver.py DIR`, and ensure it's running by visiting
+   your local server's address (by default [localhost:8080][5].)
+1. (Optional) Generate your client library(ies) with the endpoints tool.
+1. Deploy your application.
+
+[1]: https://developers.google.com/appengine
+[2]: http://python.org
+[3]: https://developers.google.com/appengine/docs/python/endpoints/
+[4]: https://console.developers.google.com/
+[5]: https://localhost:8080/
  
 ##Game Description:
 Yahtzee Game is a dice game. The object of the game is to score points by
@@ -19,7 +35,9 @@ turn to try to make various scoring combinations. Each time you can choose which
 A game consists of thirteen rounds. After each round the player
  'choose_category' to determine which scoring category is to be used for that 
  round. Once a category has been used in the game, it cannot be used again. 
-The scoring categorieshave varying point values. A Yahtzee is five-of-a-kind and scores 50 points; the highest of any category. The winner is the player who scores the most points.
+The scoring categorieshave varying point values. A Yahtzee is five-of-a-kind and
+ scores 50 points; the highest of any category. The winner is the player who 
+ scores the most points.
 Many different Yahtzee games ca be played by many different Users at any time. 
 Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
 
@@ -68,40 +86,56 @@ Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
     will be sent if the game is completed or the game is not found or the game 
     is not belonging to the user.
     
- - **make_move**
+- **get_user_games**
+    - Method: GET
+    - Parameters: None
+    - Returns: GameForms
+    - Description: Return all of a User's active games.
+
+- **get_game_historys**
+    - Method: GET
+    - Parameters: urlsafe_game_key
+    - Returns: GameHistoryForm
+    - Description: Return the history record of a game. It inculdes dice 
+    combination and points earned of each round of the game.
+
+- **get_high_scores**
+    - Method: GET
+    - Parameters: None
+    - Returns: ScoreForms
+    - Description: Return the list of high scores, top 3 as default.
+
+- **get_user_rankings**
+    - Method: GET
+    - Parameters: None
+    - Returns: UsersRankingForm
+    - Description: Return the rankings of users. Order by max scores users got.
+
+- **roll_dice**
     - Path: 'game/{urlsafe_game_key}'
     - Method: PUT
-    - Parameters: urlsafe_game_key, guess
-    - Returns: GameForm with new game state.
-    - Description: Accepts a 'guess' and returns the updated state of the game.
-    If this causes a game to end, a corresponding Score entity will be created.
-    
- - **get_scores**
-    - Path: 'scores'
-    - Method: GET
+    - Parameters: ChooseDiceForm, urlsafe_game_key
+    - Returns: GameForm
+    - Description: Accept a 'kept_dice' if user chooses to keep some of the dice
+     before next turn and return a new rolling dice result.
+
+- **choose_category**
+    - Path: 'game/{urlsafe_game_key}'
+    - Method: POST
+    - Parameters: ChooseCatForm, urlsafe_game_key
+    - Returns: GameForm
+    - Description: Accept a 'choosed_category' and record the corresponding 
+    points earned in this round. Update the dice and category information to 
+    the game history. Calculate the sum points if game ends and end game.
+
+- **_get_user**
     - Parameters: None
-    - Returns: ScoreForms.
-    - Description: Returns all Scores in the database (unordered).
-    
- - **get_user_scores**
-    - Path: 'scores/user/{user_name}'
-    - Method: GET
-    - Parameters: user_name
-    - Returns: ScoreForms. 
-    - Description: Returns all Scores recorded by the provided player (unordered).
-    Will raise a NotFoundException if the User does not exist.
-    
- - **get_active_game_count**
-    - Path: 'games/active'
-    - Method: GET
-    - Parameters: None
-    - Returns: StringMessage
-    - Description: Gets the average number of attempts remaining for all games
-    from a previously cached memcache key.
+    - Returns: User
+    - Description: A helper function to get user data.
 
 ##Models Included:
  - **User**
-    - Stores unique user_name and (optional) email address.
+    - Stores unique users and email address.
     
  - **Game**
     - Stores unique game states. Associated with User model via KeyProperty.
@@ -110,17 +144,43 @@ Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
     - Records completed games. Associated with Users model via KeyProperty.
     
 ##Forms Included:
+ - **UserPerfForm**
+    - Representation of a User's performance(name, max_score, games_completed)
+
+ - **UsersRankingForm**
+    - Multiple UserPerfForm container.
+
  - **GameForm**
-    - Representation of a Game's state (urlsafe_key, attempts_remaining,
-    game_over flag, message, user_name).
- - **NewGameForm**
-    - Used to create a new game (user_name, min, max, attempts)
- - **MakeMoveForm**
-    - Inbound make move form (guess).
+    - Representation of a Game's state.
+
+ - **GameForms**
+    - Multiple GameForm container.
+ 
+ - **ChooseDiceForm**
+    - Inbound the list of index of each dice kept for next turn.
+ 
+ - **ChooseCatForm**
+    - Inbound the Enum field of CardCategory choosed.
+
+ - **GameHistory**
+    - Game history includes dice result and corresponded category.
+
+ - **GameHistoryForm**
+    - Multiple GameHistory container.
+
  - **ScoreForm**
-    - Representation of a completed game's Score (user_name, date, won flag,
-    guesses).
+    - Representation of a completed game's Score (user, date, result).
+
  - **ScoreForms**
     - Multiple ScoreForm container.
+
  - **StringMessage**
     - General purpose String container.
+
+ ##Others:
+  - **CardCategory**
+    - Enum the game card category.
+
+ - **ConflictException**
+    - Exception mapped to HTTP 409 response.
+
