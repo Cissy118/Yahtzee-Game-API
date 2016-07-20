@@ -52,11 +52,11 @@ CATEGORY_REQUEST = endpoints.ResourceContainer(
 
 
 @endpoints.api(name='yahtzee', version='v1',
-                allowed_client_ids=[WEB_CLIENT_ID, API_EXPLORER_CLIENT_ID],
-                scopes=[EMAIL_SCOPE])
+               allowed_client_ids=[WEB_CLIENT_ID, API_EXPLORER_CLIENT_ID],
+               scopes=[EMAIL_SCOPE])
 class YahtzeeGameApi(remote.Service):
     """Yahtzee Game API"""
-    
+
     # Create User
     @endpoints.method(request_message=message_types.VoidMessage,
                       response_message=StringMessage,
@@ -84,23 +84,23 @@ class YahtzeeGameApi(remote.Service):
 
     # New Game
     @endpoints.method(request_message=message_types.VoidMessage,
-                    response_message=GameForm,
-                    path='game',
-                    name='new_game',
-                    http_method='POST')
+                      response_message=GameForm,
+                      path='game',
+                      name='new_game',
+                      http_method='POST')
     def new_game(self, request):
         """Create new game"""
-        #preload user data
+        # preload user data
         user = self._get_user()
         game = Game.new_game(user.key)
         return game.to_form('Roll the Dice! Good Luck!')
 
     # Get Game
     @endpoints.method(request_message=GET_GAME_REQUEST,
-                    response_message=GameForm,
-                    path='game/{urlsafe_game_key}',
-                    name='get_game',
-                    http_method='GET')
+                      response_message=GameForm,
+                      path='game/{urlsafe_game_key}',
+                      name='get_game',
+                      http_method='GET')
     def get_game(self, request):
         """Return the selected game state."""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
@@ -116,10 +116,10 @@ class YahtzeeGameApi(remote.Service):
 
     # Remove the incompleted game
     @endpoints.method(request_message=GET_GAME_REQUEST,
-                    response_message=StringMessage,
-                    path='game/{urlsafe_game_key}/cancel',
-                    name='cancel_game',
-                    http_method='POST')
+                      response_message=StringMessage,
+                      path='game/{urlsafe_game_key}/cancel',
+                      name='cancel_game',
+                      http_method='POST')
     def cancel_game(self, request):
         """Delete the selected game."""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
@@ -138,25 +138,25 @@ class YahtzeeGameApi(remote.Service):
             raise endpoints.NotFoundException('Game not found!')
 
     # Return all active games of the user
-    @endpoints.method(request_message=message_types.VoidMessage, 
-                    response_message=GameForms,
-                    http_method='POST',
-                    name='get_user_games')
+    @endpoints.method(request_message=message_types.VoidMessage,
+                      response_message=GameForms,
+                      http_method='POST',
+                      name='get_user_games')
     def get_user_games(self, request):
         """Return all of a User's active games."""
         user = self._get_user()
         games = Game.query(Game.user == user.key).filter(
-            Game.game_over == False).order(Game.round_remain)
+            Game.game_over is False).order(Game.round_remain)
         # return set of GameForm object per game
         return GameForms(
-            items=[game.to_form('%s remaining rounds.' %game.round_remain) 
-                    for game in games])
-    
+            items=[game.to_form('%s remaining rounds.' % game.round_remain)
+                   for game in games])
+
     # Return the history record of the game
     @endpoints.method(request_message=GET_GAME_REQUEST,
-                    response_message=GameHistoryForm,
-                    http_method='GET',
-                    name='get_game_history')
+                      response_message=GameHistoryForm,
+                      http_method='GET',
+                      name='get_game_history')
     def get_game_history(self, request):
         """Return history of the game"""
         user = self._get_user()
@@ -166,9 +166,9 @@ class YahtzeeGameApi(remote.Service):
 
     # Return a leader-board
     @endpoints.method(request_message=message_types.VoidMessage,
-                    response_message=ScoreForms,
-                    http_method='GET',
-                    name='get_high_scores')
+                      response_message=ScoreForms,
+                      http_method='GET',
+                      name='get_high_scores')
     def get_high_scores(self, request):
         """Return a list of high scores"""
         high_scores = Score.query().order(-Score.result).fetch(3)
@@ -177,9 +177,9 @@ class YahtzeeGameApi(remote.Service):
 
     # Return the ranking of users
     @endpoints.method(request_message=message_types.VoidMessage,
-                    response_message=UsersRankingForm,
-                    http_method='GET',
-                    name='get_user_rankings')
+                      response_message=UsersRankingForm,
+                      http_method='GET',
+                      name='get_user_rankings')
     def get_user_rankings(self, request):
         """Return the rankings of users"""
         ranking_users = User.query().order(-User.max_score).order(
@@ -189,10 +189,10 @@ class YahtzeeGameApi(remote.Service):
 
     # Roll Dice
     @endpoints.method(request_message=ROLL_REQUEST,
-                    response_message=GameForm,
-                    path='game/{urlsafe_game_key}',
-                    name='roll_dice',
-                    http_method='PUT')
+                      response_message=GameForm,
+                      path='game/{urlsafe_game_key}',
+                      name='roll_dice',
+                      http_method='PUT')
     def roll_dice(self, request):
         """Roll a dice -- Three chances each round"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
@@ -209,25 +209,25 @@ class YahtzeeGameApi(remote.Service):
             game.dice = roll(dice_kept)
             game.roll_remain -= 1
             game.put()
-            return game.to_form('%s chances remain to roll in this round.' 
-                %game.roll_remain)
+            return game.to_form('%s chances remain to roll in this round.'
+                                % game.roll_remain)
 
     # Category Round
     @endpoints.method(request_message=CATEGORY_REQUEST,
-                    response_message=GameForm,
-                    path='game/{urlsafe_game_key}',
-                    name='choose_category',
-                    http_method='POST')
+                      response_message=GameForm,
+                      path='game/{urlsafe_game_key}',
+                      name='choose_category',
+                      http_method='POST')
     def choose_category(self, request):
         """Choose a category to earn points for each round"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         if game.game_over:
             return game.to_form('Game already over!')
         card = game.score_card
-        index = int(request.category) #cast category Enum to int as the index
+        index = int(request.category)  # cast category Enum to int as the index
         if not game.dice:
             return game.to_form('Roll the dice first!')
-        if card[index] is not -1: 
+        if card[index] is not -1:
             return game.to_form(
                 'You have already choosed this category.')
         # Record score to the category
@@ -239,23 +239,23 @@ class YahtzeeGameApi(remote.Service):
         game.dice_history.append(dice_str)
         game.cat_history.append(request.category)
         # Check the sum and add bonus if any
-        if not -1 in card[0:6]:
+        if -1 not in card[0:6]:
             card[6] = sum(card[0:6])
             card[7] = 35 if card[6] >= 63 else 0
         # Check if game end and add sum
-        if not -1 in card[0:15]:
+        if -1 not in card[0:15]:
             card[15] = sum(card[8:15])
             card[16] = sum(card[6:15])
             total = card[16]
             game.end_game()
-            msg = 'You got total %s ! Game End.' %total
+            msg = 'You got total %s ! Game End.' % total
             return game.to_form(msg)
         else:
             # Reset dice
             game.roll_remain = 3
-            game.dice[:]=[]
+            game.dice[:] = []
             game.put()
-        return game.to_form('You got %s points.' %points)
+        return game.to_form('You got %s points.' % points)
 
     # Get game user information
     def _get_user(self):
@@ -267,7 +267,7 @@ class YahtzeeGameApi(remote.Service):
         p_key = ndb.Key(User, user_id)
         user = p_key.get()
         if not user:
-            raise endpoints.NotFoundException('Please create as a user first') 
+            raise endpoints.NotFoundException('Please create as a user first')
         return user
 
 

@@ -11,7 +11,8 @@ from protorpc import message_types
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import msgprop
 
-class CardCategory(messages.Enum):  
+
+class CardCategory(messages.Enum):
     """CardCategory -- Game Card Category"""
     ONES = 0
     TWOS = 1
@@ -30,7 +31,8 @@ class CardCategory(messages.Enum):
     CHANCE = 14
     LOWER_SCORE = 15
     TOTAL = 16
-#CATEGORIES = [0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14]
+# CATEGORIES = [0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14]
+
 
 # --------------------------------------------------------
 # User
@@ -49,15 +51,18 @@ class User(ndb.Model):
         form.games_completed = self.games_completed
         return form
 
+
 class UserPerfForm(messages.Message):
     """UserPerfForm -- Show user's performance"""
     name = messages.StringField(1, required=True)
     max_score = messages.IntegerField(2, required=True)
     games_completed = messages.IntegerField(3, required=True)
 
+
 class UsersRankingForm(messages.Message):
     """UsersRankingForm -- List the ranking of users"""
     items = messages.MessageField(UserPerfForm, 1, repeated=True)
+
 
 # --------------------------------------------------------
 # Game
@@ -68,7 +73,7 @@ class Game(ndb.Model):
     roll_remain = ndb.IntegerProperty(required=True)
     game_over = ndb.BooleanProperty(required=True, default=False)
     dice = ndb.IntegerProperty(repeated=True)  # list of Integer
-    score_card = ndb.IntegerProperty(repeated=True) # list of cat score
+    score_card = ndb.IntegerProperty(repeated=True)  # list of cat score
     cat_history = msgprop.EnumProperty(
                 CardCategory, repeated=True)
     dice_history = ndb.StringProperty(repeated=True)
@@ -120,7 +125,7 @@ class Game(ndb.Model):
         user = User.query(User.key == self.user).get()
         # record max score
         if total_score > user.max_score:
-            user.max_score = total_score 
+            user.max_score = total_score
         # count game completed
         user.games_completed += 1
         user.put()
@@ -129,7 +134,7 @@ class Game(ndb.Model):
         """Return history of the game to form"""
         form = GameHistoryForm()
         # get current history records length
-        length = len(self.dice_history)  
+        length = len(self.dice_history)
         for i in range(0, length):
             history = GameHistory()
             history.dice = self.dice_history[i]
@@ -140,6 +145,7 @@ class Game(ndb.Model):
                 form_list.append(history)
         form.items = [item for item in form_list]
         return form
+
 
 class GameForm(messages.Message):
     """GameForm -- for outbound game state information"""
@@ -168,27 +174,33 @@ class GameForm(messages.Message):
     total = messages.IntegerField(23)
     message = messages.StringField(24)
 
+
 class GameForms(messages.Message):
     """GameForms -- multiple games outbound form message"""
     items = messages.MessageField(GameForm, 1, repeated=True)
 
+
 class ChooseDiceForm(messages.Message):
     """"Used to choose the index of dice kept for next roll"""
     index_choosed = messages.IntegerField(1, repeated=True)
+
 
 class ChooseCatForm(messages.Message):
     """Used to choose the category after each round"""
     category = messages.EnumField(
         'CardCategory', 1, required=True)
 
+
 class GameHistory(messages.Message):
     """GameHistory -- a formatted record of a game round"""
     dice = messages.StringField(1, required=True)
     category = messages.StringField(2, required=True)
 
+
 class GameHistoryForm(messages.Message):
     """GameHistoryForm -- return detailed record of the whole game"""
     items = messages.MessageField(GameHistory, 1, repeated=True)
+
 
 # --------------------------------------------------------
 # Score
@@ -206,16 +218,18 @@ class Score(ndb.Model):
         form.result = self.result
         return form
 
+
 class ScoreForm(messages.Message):
     """ScoreForm -- Score outbound form message"""
     user_name = messages.StringField(1, required=True)
     date = messages.StringField(2, required=True)
     result = messages.IntegerField(3, required=True)
-    
+
 
 class ScoreForms(messages.Message):
     """ScoreForms -- multiple  Scores outbound form message"""
     items = messages.MessageField(ScoreForm, 1, repeated=True)
+
 
 # --------------------------------------------------------
 # Needed for registration
@@ -223,8 +237,7 @@ class StringMessage(messages.Message):
     """StringMessage-- outbound (single) string message"""
     message = messages.StringField(1, required=True)
 
+
 class ConflictException(endpoints.ServiceException):
     """ConflictException -- exception mapped to HTTP 409 response"""
     http_status = httplib.CONFLICT
-
-
