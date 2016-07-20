@@ -64,7 +64,6 @@ def find_score(dice, category):
 			"1211" in countsStr or "1121" in countsStr or
 			"1112" in countsStr):
 			return 30
-		 # another method: use sort dice?????
 	# Chance
 	elif category is CHANCE:
 		return sum(dice)
@@ -77,15 +76,6 @@ def roll_dice(num):
 	dice = []
 	for i in range(num):
 		dice.append(random.randint(1,6))
-	return dice
-
-def first_roll():
-	dice = roll_dice(TOTAL_DICE)
-	return dice
-
-def second_third_roll(dice_kept):
-	num_dice = TOTAL_DICE - len(dice_kept)
-	dice = dice_kept + roll_dice(num_dice)
 	return dice
 
 def choose_dice(dice, index_choosed):
