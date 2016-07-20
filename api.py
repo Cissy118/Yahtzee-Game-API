@@ -146,7 +146,7 @@ class YahtzeeGameApi(remote.Service):
         """Return all of a User's active games."""
         user = self._get_user()
         games = Game.query(Game.user == user.key).filter(
-            Game.game_over is False).order(Game.round_remain)
+            Game.game_over == False).order(Game.round_remain)
         # return set of GameForm object per game
         return GameForms(
             items=[game.to_form('%s remaining rounds.' % game.round_remain)
