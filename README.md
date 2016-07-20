@@ -129,11 +129,6 @@ Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
     points earned in this round. Update the dice and category information to 
     the game history. Calculate the sum points if game ends and end game.
 
-- **_get_user**
-    - Parameters: None
-    - Returns: User
-    - Description: A helper function to get user data.
-
 ##Models Included:
  - **User**
     - Stores unique users and email address.
@@ -178,8 +173,8 @@ Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
  - **StringMessage**
     - General purpose String container.
 
- ##Others:
-  - **CardCategory**
+##Others Included:
+ - **CardCategory**
     - Enum the game card category.
 
  - **ConflictException**
