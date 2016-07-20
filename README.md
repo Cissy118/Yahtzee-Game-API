@@ -27,20 +27,21 @@
 [5]: https://localhost:8080/
  
 ##Game Description:
-Yahtzee Game is a dice game. The object of the game is to score points by
+- Yahtzee Game is a dice game. The object of the game is to score points by
 rolling five dice to make certain combinations. 
-Each game begin with 'roll_dice'. The dice can be rolled up to three times in a 
+- Each game begin with 'roll_dice'. The dice can be rolled up to three times in a 
 turn to try to make various scoring combinations. Each time you can choose which
  dice to be kept before next turn.
-A game consists of thirteen rounds. After each round the player
+- A game consists of thirteen rounds. After each round the player
  'choose_category' to determine which scoring category is to be used for that 
  round. Once a category has been used in the game, it cannot be used again. 
-The scoring categorieshave varying point values. A Yahtzee is five-of-a-kind and
+- The scoring categories have varying point values. A Yahtzee is five-of-a-kind and
  scores 50 points; the highest of any category. The winner is the player who 
- scores the most points.
-Many different Yahtzee games ca be played by many different Users at any time. 
+ scores the most points. [Scoring rule is here][6].
+- Many different Yahtzee games can be played by many different Users at any time. 
 Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
 
+[6]:https://en.wikipedia.org/wiki/Yahtzee#Rules
 
 ##Files Included:
  - api.py: Contains endpoints and game playing logic.
