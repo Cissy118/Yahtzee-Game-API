@@ -103,7 +103,7 @@ class YahtzeeGameApi(remote.Service):
                     http_method='GET')
     def get_game(self, request):
         """Return the selected game state."""
-        game = get_by_urlsafe(request.urlsafe_game_key, Game) ##util里的方法
+        game = get_by_urlsafe(request.urlsafe_game_key, Game)
         if game:
             user = self._get_user()
             if game.user.get() is not user:
@@ -212,7 +212,7 @@ class YahtzeeGameApi(remote.Service):
             return game.to_form('%s chances remain to roll in this round.' 
                 %game.roll_remain)
 
-    # Category Round ---- Caution! # assume request.category is an integer
+    # Category Round
     @endpoints.method(request_message=CATEGORY_REQUEST,
                     response_message=GameForm,
                     path='game/{urlsafe_game_key}',
@@ -224,9 +224,7 @@ class YahtzeeGameApi(remote.Service):
         if game.game_over:
             return game.to_form('Game already over!')
         card = game.score_card
-        print request.category ##
-        index = int(request.category) # cast category Enum to int as the index
-        #print request.category       ## Print SIXES
+        index = int(request.category) #cast category Enum to int as the index
         if not game.dice:
             return game.to_form('Roll the dice first!')
         if card[index] is not -1: 
@@ -255,11 +253,8 @@ class YahtzeeGameApi(remote.Service):
         else:
             # Reset dice
             game.roll_remain = 3
-            print game.dice ## test
             game.dice[:]=[]
             game.put()
-            print 'dice history: %s' %game.dice_history ##
-            print 'category history %s' %game.cat_history ##
         return game.to_form('You got %s points.' %points)
 
     # Get game user information
