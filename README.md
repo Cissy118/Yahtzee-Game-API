@@ -29,12 +29,12 @@
 ##Game Description:
 - Yahtzee Game is a dice game. The object of the game is to score points by
 rolling five dice to make certain combinations. 
-- Each game begin with 'roll_dice'. The dice can be rolled up to three times in a 
-turn to try to make various scoring combinations. Each time you can choose which
- dice to be kept before next turn.
-- A game consists of thirteen rounds. After each round the player
- 'choose_category' to determine which scoring category is to be used for that 
- round. Once a category has been used in the game, it cannot be used again. 
+- A game consists of thirteen rounds. Each round begin with 'roll_dice'. The dice 
+can be rolled up to three times in a turn to try to make various scoring 
+combinations. Each time you can choose which dice to be kept before next turn.
+- After each round the player 'choose_category' to determine which scoring 
+category is to be used for that round. Once a category has been used in the game, 
+it cannot be used again. 
 - The scoring categories have varying point values. A Yahtzee is five-of-a-kind and
  scores 50 points; the highest of any category. The winner is the player who 
  scores the most points. [Scoring rule is here][6].
