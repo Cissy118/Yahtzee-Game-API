@@ -5,30 +5,22 @@ move game logic to another file. Ideally the API will be simple, concerned
 primarily with communication to/from the API's users."""
 
 
-import logging
 import endpoints
 from protorpc import remote
 from protorpc import messages
 from protorpc import message_types
-from google.appengine.api import memcache
-from google.appengine.api import taskqueue
-from google.appengine.api import urlfetch
 from google.appengine.ext import ndb
 
 from models import User
-from models import UserPerfForm
 from models import UsersRankingForm
 from models import Game
 from models import GameForm
 from models import GameForms
 from models import ChooseDiceForm
 from models import ChooseCatForm
-from models import CardCategory
 from models import Score
-from models import ScoreForm
 from models import ScoreForms
 from models import StringMessage
-from models import ConflictException
 from models import GameHistoryForm
 
 from utils import get_by_urlsafe
@@ -119,7 +111,7 @@ class YahtzeeGameApi(remote.Service):
                       response_message=StringMessage,
                       path='game/{urlsafe_game_key}/cancel',
                       name='cancel_game',
-                      http_method='POST')
+                      http_method='DELETE')
     def cancel_game(self, request):
         """Delete the selected game."""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
@@ -197,10 +189,12 @@ class YahtzeeGameApi(remote.Service):
         """Roll a dice -- Three chances each round"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         if game.game_over:
-            return game.to_form('Game already over!')
+            raise endpoints.ForbiddenException('Game is already over!')
         # for the first roll you cannot choose dice to keep
         if not game.dice and request.index_chosen:
             return game.to_form('Cannot choose index now.')
+        if len(request.index_chosen) is 5:
+            return game.to_form('You cannot keep all dice to roll.')
         if game.roll_remain < 1:
             return game.to_form('You have to choose the category, \
                 no more roll chance.')

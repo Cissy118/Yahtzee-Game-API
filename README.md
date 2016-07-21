@@ -42,6 +42,25 @@ it cannot be used again.
 Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
 
 [6]:https://en.wikipedia.org/wiki/Yahtzee#Rules
+##How to play/test the game:
+ - Create as a user. May need Oauth login first.
+ - Create a new game, or retrieve an incompleted game to continue via
+  'urlsafe_game_key'.
+ - Start the first round of game by rolling the dice. You have three times to roll the dice in each round.
+ - 
+ONES: Get as many ones as possible. - Points = count(ONE) * 1
+TWOS: Get as many twos as possible. - Points = count(TWO) * 2
+THREES: Get as many threes as possible. - Points = count(THREE) * 3
+FOURS: Get as many fours as possible. - Points = count(FOUR) * 4
+FIVES: Get as many fives as possible. - Points = count(FIVE) * 5
+SIXES: Get as many sixes as possible. - Points = count(SIX) * 6
+THREE_OF_A_KIND: Get three dice with the same number. Points are the sum all dice (not just the three of a kind).
+FOUR_OF_A_KIND: Get four dice with the same number. Points are the sum all dice (not just the four of a kind).
+FULL_HOUSE: Get three of a kind and a pair, e.g. 1,1,3,3,3 or 3,3,3,6,6. Scores 25 points.
+SMALL_STRAIGHT: Get four sequential dice, 1,2,3,4 or 2,3,4,5 or 3,4,5,6. Scores 30 points.
+LARGE_STRAIGHT: Get five sequential dice, 1,2,3,4,5 or 2,3,4,5,6. Scores 40 points.
+CHANCE: You can put anything into chance, it's basically like a garbage can when you don't have anything else you can use the dice for. The score is simply the sum of the dice.
+YAHTZEE: Five of a kind. Scores 50 points. You can get multiple Yahtzees, see below for details.
 
 ##Files Included:
  - api.py: Contains endpoints and game playing logic.
@@ -80,7 +99,7 @@ Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
 
 - **cancel_game**
     - Path: 'game/{urlsafe_game_key}/cancel'
-    - Method: POST
+    - Method: DELETE
     - Parameters: urlsafe_game_key
     - Returns: Message confirming the cancellation of the Game.
     - Description: Delete an incompleted game of the user. A warning message 
