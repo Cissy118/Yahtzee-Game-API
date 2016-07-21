@@ -29,7 +29,7 @@
 ##Game Description:
 - Yahtzee Game is a dice game. The object of the game is to score points by
 rolling five dice to make certain combinations. 
-- A game consists of thirteen rounds. Each round begin with 'roll_dice'. The dice 
+- A game consists of thirteen rounds. Each round begins with 'roll_dice'. The dice 
 can be rolled up to three times in a turn to try to make various scoring 
 combinations. Each time you can choose which dice to be kept before next turn.
 - After each round the player 'choose_category' to determine which scoring 
