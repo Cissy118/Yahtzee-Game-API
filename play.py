@@ -81,13 +81,13 @@ def roll_dice(num):
     return dice
 
 
-def choose_dice(dice, index_choosed):
+def choose_dice(dice, index_chosen):
     dice_kept = []
     if not dice:
         return dice_kept
-    # if any dice was choosed
-    if index_choosed and len(index_choosed) is not TOTAL_DICE:
-        for i in index_choosed:
+    # if any dice was chosen
+    if index_chosen and len(index_chosen) is not TOTAL_DICE:
+        for i in index_chosen:
             dice_kept.append(dice[i])
     return dice_kept
 

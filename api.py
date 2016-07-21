@@ -199,13 +199,13 @@ class YahtzeeGameApi(remote.Service):
         if game.game_over:
             return game.to_form('Game already over!')
         # for the first roll you cannot choose dice to keep
-        if not game.dice and request.index_choosed:
+        if not game.dice and request.index_chosen:
             return game.to_form('Cannot choose index now.')
         if game.roll_remain < 1:
             return game.to_form('You have to choose the category, \
                 no more roll chance.')
         else:
-            dice_kept = choose_dice(game.dice, request.index_choosed)
+            dice_kept = choose_dice(game.dice, request.index_chosen)
             game.dice = roll(dice_kept)
             game.roll_remain -= 1
             game.put()
@@ -229,7 +229,7 @@ class YahtzeeGameApi(remote.Service):
             return game.to_form('Roll the dice first!')
         if card[index] is not -1:
             return game.to_form(
-                'You have already choosed this category.')
+                'You have already chosen this category.')
         # Record score to the category
         points = find_score(game.dice, index)
         card[index] = points

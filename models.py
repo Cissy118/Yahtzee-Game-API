@@ -182,7 +182,7 @@ class GameForms(messages.Message):
 
 class ChooseDiceForm(messages.Message):
     """"Used to choose the index of dice kept for next roll"""
-    index_choosed = messages.IntegerField(1, repeated=True)
+    index_chosen = messages.IntegerField(1, repeated=True)
 
 
 class ChooseCatForm(messages.Message):
