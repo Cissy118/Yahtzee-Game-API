@@ -47,7 +47,8 @@ Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
 1. Create a new game, or retrieve an incompleted game to continue via
   'urlsafe_game_key'.
 1. Start the first round of game by rolling the dice. You have three times to roll the dice in each round.
-- 
+You can choose which dice to keep before the second and the third time rolling in each round, or you can just skip these two chances, for instance, you get a 3,3,3,3,3 at first time rolling, you can get 50 points if you choose 'YAHTZEE' category.
+1. Choose the category, better choose the one you can get more points as possible based on your dice result.
  - ONES: Get as many ones as possible.  Points = count(ONES) * 1
  - TWOS: Get as many twos as possible.  Points = count(TWOS) * 2
  - THREES: Get as many threes as possible.  Points = count(THREES) * 3
@@ -61,6 +62,9 @@ Each game can be retrieved by using the path parameter 'urlsafe_game_key'.
  - LARGE_STRAIGHT: Get five sequential dice, 1,2,3,4,5 or 2,3,4,5,6. Scores 40 points.
  - CHANCE: You can put anything into chance, it's basically like a garbage can when you don't have anything else you can use the dice for. Points = sum of all dice.
  - YAHTZEE: Five of a kind. Scores 50 points.
+1. After chose the category, you finished first round and could begin the second round with rolling the dice as well as you did in the first round.
+1. Until you played 13 rounds and all the categories have been chosen to get points, you complete the game and will get a total score.
+1. Users rankings are based on the max scores got by users.
 
 ##Files Included:
  - api.py: Contains endpoints and game playing logic.
